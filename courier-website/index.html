@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftLink Courier</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">SL</span>
+        <div>
+          <strong>SwiftLink Courier</strong>
+          <small>Shipments, riders, and approvals</small>
+        </div>
+      </div>
+      <nav class="role-tabs" aria-label="Choose interface">
+        <button class="tab active" data-view="customer"><i data-lucide="package"></i>Customer</button>
+        <button class="tab" data-view="courier"><i data-lucide="bike"></i>Courier</button>
+        <button class="tab" data-view="admin"><i data-lucide="shield-check"></i>Admin</button>
+      </nav>
+      <div id="workspaceLabel" class="workspace-label hidden" aria-live="polite"></div>
+      <div id="userBar" class="user-bar hidden">
+        <span id="sessionName"></span>
+        <button id="logoutBtn" class="ghost" type="button">Log out</button>
+      </div>
+    </header>
+
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-copy">
+        <p class="eyebrow">SwiftLink Courier</p>
+        <h1>Dispatch control for everyday deliveries.</h1>
+        <p id="authIntro">Log in to continue, or create a customer/courier account when you need one.</p>
+      </div>
+
+      <div class="auth-layout">
+        <div class="auth-preview" aria-label="SwiftLink delivery preview">
+          <div class="route-visual auth-route">
+            <div class="city-grid"></div>
+            <span class="pin warehouse"><i data-lucide="warehouse"></i></span>
+            <span class="pin customer-pin"><i data-lucide="map-pin"></i></span>
+            <span class="van"><i data-lucide="truck"></i></span>
+            <svg viewBox="0 0 520 260" role="img" aria-hidden="true">
+              <path d="M72 193 C155 80, 265 228, 448 72" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="panel auth-card">
+          <div class="auth-card-head">
+            <div>
+              <p class="eyebrow" id="authModeEyebrow">Customer access</p>
+              <h3 id="authCardTitle"><span id="authRoleLabel">Customer</span> log in</h3>
+            </div>
+            <div id="authModeToggle" class="mode-toggle" aria-label="Choose account action">
+              <button class="mode-btn active" data-auth-mode="login" type="button">Log in</button>
+              <button class="mode-btn" data-auth-mode="signup" type="button">Create account</button>
+            </div>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+          <input id="loginRole" name="role" type="hidden" value="customer" />
+          <label id="loginEmailLabel">
+            Email
+            <input name="email" type="email" required placeholder="you@example.com" />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" required placeholder="Enter password" />
+          </label>
+          <button class="primary" type="submit"><i data-lucide="badge-check"></i>Log in</button>
+        </form>
+
+          <form id="signupForm" class="auth-form hidden">
+          <input id="signupRole" name="role" type="hidden" value="customer" />
+          <label>
+            Full name
+            <input name="name" required placeholder="Amina Bello" />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" required placeholder="you@example.com" />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" required placeholder="Create password" />
+          </label>
+          <div id="signupCourierFields" class="extra-fields hidden">
+            <label>
+              Phone number
+              <input name="phone" placeholder="+234 800 000 0000" />
+            </label>
+            <label>
+              Vehicle type
+              <select name="vehicle">
+                <option>Motorbike</option>
+                <option>Car</option>
+                <option>Van</option>
+                <option>Bicycle</option>
+              </select>
+            </label>
+            <label>
+              State and capital
+              <select name="serviceState" data-nigeria-state-select></select>
+            </label>
+            <label>
+              Service area
+              <input name="area" placeholder="Lagos Island" />
+            </label>
+            <label>
+              Profile photo (required)
+              <input name="profilePhoto" type="file" accept="image/*" />
+            </label>
+            <label>
+              Driver's license number
+              <input name="driversLicense" placeholder="DL-123456789" />
+            </label>
+            <label>
+              Plate number
+              <input name="plateNumber" placeholder="ABC-123XY" />
+            </label>
+          </div>
+            <button class="primary" type="submit"><i data-lucide="user-plus"></i>Create account</button>
+        </form>
+        </div>
+      </div>
+    </section>
+
+    <main id="appShell" class="hidden">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Same-day dispatch control</p>
+          <h1>Manage deliveries from request to doorstep.</h1>
+          <p>
+            A simple courier website demo with separate customer, courier, and admin workspaces.
+            New couriers stay on standby until an admin verifies them.
+          </p>
+        </div>
+        <div class="route-visual" aria-label="Courier delivery route illustration">
+          <div class="city-grid"></div>
+          <span class="pin warehouse"><i data-lucide="warehouse"></i></span>
+          <span class="pin customer-pin"><i data-lucide="map-pin"></i></span>
+          <span class="van"><i data-lucide="truck"></i></span>
+          <svg viewBox="0 0 520 260" role="img" aria-hidden="true">
+            <path d="M72 193 C155 80, 265 228, 448 72" />
+          </svg>
+        </div>
+      </section>
+
+      <section id="customer" class="view active" aria-labelledby="customer-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Customer Interface</p>
+            <h2 id="customer-title">Book a delivery</h2>
+          </div>
+          <span class="status-pill ready">Open for orders</span>
+        </div>
+
+        <div class="customer-tabs" aria-label="Customer sections">
+          <button class="customer-tab active" data-customer-tab="booking" type="button">Book delivery</button>
+          <button class="customer-tab" data-customer-tab="deliveries" type="button">
+            Deliveries <span id="customerDeliveryCount">0</span>
+          </button>
+          <button class="customer-tab" data-customer-tab="queries" type="button">
+            Queries <span id="customerQueryCount">0</span>
+          </button>
+        </div>
+
+        <div class="customer-panels">
+          <div id="customerBookingPanel" class="customer-panel active">
+            <div class="customer-booking-layout">
+              <form id="bookingForm" class="panel customer-booking-form">
+                <h3>New shipment</h3>
+                <label>
+                  Customer name
+                  <input name="customerName" required placeholder="Amina Bello" />
+                </label>
+                <label>
+                  Pickup address
+                  <input name="pickup" required placeholder="12 Market Road" />
+                </label>
+                <label>
+                  Delivery address
+                  <input name="dropoff" required placeholder="88 Riverside Avenue" />
+                </label>
+                <label>
+                  Delivery state and capital
+                  <select name="deliveryState" data-nigeria-state-select required></select>
+                </label>
+                <label>
+                  Package type
+                  <select name="packageType">
+                    <option>Documents</option>
+                    <option>Food</option>
+                    <option>Parcel</option>
+                    <option>Fragile item</option>
+                  </select>
+                </label>
+                <label>
+                  Notes
+                  <textarea name="notes" rows="3" placeholder="Gate code, fragile item, preferred time..."></textarea>
+                </label>
+                <button class="primary" type="submit"><i data-lucide="send"></i>Book shipment</button>
+              </form>
+            </div>
+          </div>
+
+          <div id="customerDeliveriesPanel" class="customer-panel">
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Dispatch History</p>
+                  <h3>My deliveries</h3>
+                </div>
+              </div>
+              <div id="customerDeliveriesList" class="stack-list"></div>
+            </div>
+          </div>
+
+          <div id="customerQueriesPanel" class="customer-panel">
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Delivery Support</p>
+                  <h3>My queries</h3>
+                </div>
+              </div>
+              <div id="customerQueriesList" class="stack-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="courier" class="view" aria-labelledby="courier-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Courier Interface</p>
+            <h2 id="courier-title">Register, wait for admin authorisation, then deliver</h2>
+          </div>
+          <span id="courierHeaderStatus" class="status-pill standby">Registration required</span>
+        </div>
+
+        <div class="courier-workspace">
+          <div class="courier-tabs" aria-label="Courier sections">
+            <button class="courier-tab active" data-courier-tab="status" type="button"><i data-lucide="activity"></i>Status</button>
+            <button class="courier-tab" data-courier-tab="deliveries" type="button"><i data-lucide="package-check"></i>Deliveries</button>
+            <button class="courier-tab" data-courier-tab="profile" type="button"><i data-lucide="settings"></i>Profile</button>
+          </div>
+
+          <div class="courier-panels">
+            <div id="courierStatusPanel" class="courier-panel active">
+              <div class="panel courier-focus-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Account Status</p>
+                    <h3>Courier status</h3>
+                  </div>
+                </div>
+                <div id="courierLookupControls" class="courier-lookup-controls">
+                  <label>
+                    Check status
+                    <input id="courierLookup" placeholder="Enter your phone number" />
+                  </label>
+                  <button id="courierLookupBtn" class="secondary" type="button"><i data-lucide="badge-check"></i>Check status</button>
+                </div>
+                <div id="courierStatus" class="status-box courier-status-box">
+                  Registered couriers stay on standby until admin authorisation is complete.
+                </div>
+              </div>
+            </div>
+
+            <div id="courierDeliveriesPanel" class="courier-panel">
+              <div class="panel courier-focus-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Dispatch Board</p>
+                    <h3>Deliveries</h3>
+                  </div>
+                </div>
+                <div id="availableJobs" class="job-list"></div>
+              </div>
+            </div>
+
+            <div id="courierProfilePanel" class="courier-panel">
+              <div class="panel courier-focus-panel">
+                <form id="courierForm" class="courier-form">
+                  <h3>Courier registration</h3>
+                  <div class="form-grid">
+                    <label>
+                      Full name
+                      <input name="name" required placeholder="Daniel Okafor" />
+                    </label>
+                    <label>
+                      Phone number
+                      <input name="phone" required placeholder="+234 800 000 0000" />
+                    </label>
+                    <label>
+                      Vehicle type
+                      <select name="vehicle">
+                        <option>Motorbike</option>
+                        <option>Car</option>
+                        <option>Van</option>
+                        <option>Bicycle</option>
+                      </select>
+                    </label>
+                    <label>
+                      State and capital
+                      <select name="serviceState" data-nigeria-state-select required></select>
+                    </label>
+                    <label>
+                      Service area
+                      <input name="area" required placeholder="Lagos Island" />
+                    </label>
+                    <label>
+                      Profile photo (required)
+                      <input name="profilePhoto" type="file" accept="image/*" required />
+                    </label>
+                    <label>
+                      Driver's license number
+                      <input name="driversLicense" required placeholder="DL-123456789" />
+                    </label>
+                    <label>
+                      Plate number
+                      <input name="plateNumber" required placeholder="ABC-123XY" />
+                    </label>
+                  </div>
+                  <button class="primary" type="submit"><i data-lucide="user-plus"></i>Submit registration</button>
+                </form>
+
+                <form id="courierSettingsForm" class="settings-form hidden">
+                  <h3>Location settings</h3>
+                  <label>
+                    State and capital
+                    <select id="courierStateSetting" name="serviceState" data-nigeria-state-select></select>
+                  </label>
+                  <button class="secondary" type="submit"><i data-lucide="map-pin"></i>Update location</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin" class="view" aria-labelledby="admin-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Admin Interface</p>
+            <h2 id="admin-title">Verify couriers and monitor jobs</h2>
+          </div>
+        </div>
+
+        <div class="admin-tabs" aria-label="Admin sections">
+          <button class="admin-tab active" data-admin-tab="couriers" type="button">
+            Couriers <span id="courierTabCount">0</span>
+          </button>
+          <button class="admin-tab" data-admin-tab="shipments" type="button">
+            Shipments <span id="shipmentTabCount">0</span>
+          </button>
+          <button class="admin-tab" data-admin-tab="queries" type="button">
+            Queries <span id="queryTabCount">0</span>
+          </button>
+          <button class="admin-tab" data-admin-tab="users" type="button">
+            Users <span id="userTabCount">0</span>
+          </button>
+        </div>
+
+        <div class="admin-panels">
+          <div id="adminCouriersPanel" class="panel admin-panel active">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Verification Queue</p>
+                <h3>Courier authorisations</h3>
+              </div>
+            </div>
+            <div id="courierApplications" class="stack-list"></div>
+          </div>
+          <div id="adminShipmentsPanel" class="panel admin-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Dispatch Board</p>
+                <h3>Shipments</h3>
+              </div>
+            </div>
+            <div id="shipmentList" class="stack-list"></div>
+          </div>
+          <div id="adminQueriesPanel" class="panel admin-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Customer Queries</p>
+                <h3>Investigations</h3>
+              </div>
+            </div>
+            <div id="queryList" class="stack-list"></div>
+          </div>
+          <div id="adminUsersPanel" class="panel admin-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">User Management</p>
+                <h3>Accounts</h3>
+              </div>
+            </div>
+            <div class="user-admin-tabs" aria-label="User account sections">
+              <button class="user-admin-tab active" data-user-admin-tab="customers" type="button">Customers</button>
+              <button class="user-admin-tab" data-user-admin-tab="couriers" type="button">Couriers</button>
+            </div>
+            <div id="adminCustomersList" class="stack-list user-admin-panel active"></div>
+            <div id="adminCourierUsersList" class="stack-list user-admin-panel"></div>
+          </div>
+        </div>
+        <button id="refreshData" class="admin-refresh" aria-label="Refresh data" type="button"></button>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="icons.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
